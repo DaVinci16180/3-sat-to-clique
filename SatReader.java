@@ -6,12 +6,12 @@ import java.util.Scanner;
 public class SatReader {
 
     private int[][] graph;
+    private int literalsAmount;
+    private int clausesAmount;
 
     public SatReader(String fileName) {
         fromFile(fileName);
     }
-
-    public SatReader() {}
 
     public void fromFile(String fileName) {
         File file = new File(fileName);
@@ -22,9 +22,9 @@ public class SatReader {
             throw new RuntimeException(e);
         }
 
-        int literalsAmount = scanner.nextInt();
+        literalsAmount = scanner.nextInt();
         scanner.nextLine();
-        int clausesAmount = scanner.nextInt();
+        clausesAmount = scanner.nextInt();
         scanner.nextLine();
 
         int size = literalsAmount * clausesAmount;
@@ -41,6 +41,7 @@ public class SatReader {
 
         int[] labels = new int[size];
 
+        // O(n)
         for (int i = 0; i < expression.length; i++) {
             String[] literals = expression[i].split("\\+");
 
@@ -56,10 +57,11 @@ public class SatReader {
                     code = codeIter++ * multiplier;
                 }
 
-                labels[i * clausesAmount + j] = code;
+                labels[i * literalsAmount + j] = code;
             }
         }
 
+        // O(n^2)
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                 if (row / 3 == col / 3)
@@ -78,5 +80,13 @@ public class SatReader {
 
     public int[][] getGraph() {
         return graph;
+    }
+
+    public int getLiteralsAmount() {
+        return literalsAmount;
+    }
+
+    public int getClausesAmount() {
+        return clausesAmount;
     }
 }
